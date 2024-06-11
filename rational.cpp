@@ -11,6 +11,7 @@
 #include <ostream>
 #include <sstream>
 #include <iomanip>
+#include <string>
 
 using std::ostream;
 using std::stringstream;
@@ -36,8 +37,6 @@ Rational::Rational(): _numerator(0), _denominator(1) {
  */
 Rational::Rational(int numerator, int denominator): _numerator(numerator), _denominator(denominator) {
 
-
-
     if (_denominator == _numerator) {
         return;
     }
@@ -48,10 +47,51 @@ Rational::Rational(int numerator, int denominator): _numerator(numerator), _deno
 }
 
 
+/**
+ * Rational Constructor for Doubles
+ * Takes in a double and turns it into a rational number.
+ * Does so finding out how many decimal numbers there are, making
+ * that that be how many decimals are in the denominator after 1.
+ * Multiples the denominator by the given number to create the numerator.
+ * Calls simplify to simply the rational.
+ * @param number
+ * @return none
+ */
+Rational::Rational(double number) {
 
-Rational::Rational(double number): _numerator(0), _denominator(1) {
+    stringstream ss;
+    ss << number;
+
+    string num = ss.str();
+
+    int pos;
+
+    if (num.find(".") == std::string::npos) {
+        _numerator = number;
+        _denominator = 1;
+        return;
+    } else {
+        pos = num.find(".");
+    }
+
+    ss.str("");
+    ss << "1";
+    for (size_t i = pos + 1 ; i < num.length(); i++) {
+        ss << "0";
+    }
+
+    _denominator = stoi(ss.str());
+    _numerator = (stoi(num) * _denominator);
+
+    simplify();
 }
 
+/**
+ * Simplify
+ * Simplifies any rational number
+ * @param none
+ * @return none
+ */
 void Rational::simplify()  {
 
     int gcf = 1;
@@ -68,10 +108,23 @@ void Rational::simplify()  {
     _denominator /= gcf;
 }
 
+/**
+ * Rational Operator - Overload
+ * Turns any rational number into its negative
+ * @param none
+ * @returns the negative of the number that originally called it.
+ */
 const Rational Rational::operator-()const {
     return Rational(-1 * _numerator, _denominator);
 }
 
+/**
+ * Rational Operator - Overload
+ * Subtracts two rational numbers.
+ * Finds common denominators when necessary.
+ * @param rhs
+ * @returns the difference between the two numbers.
+ */
 const Rational Rational::operator-(const Rational& rhs) {
 
     if (_denominator != rhs._denominator) {
@@ -83,9 +136,15 @@ const Rational Rational::operator-(const Rational& rhs) {
         return result;
 
     }
-
 }
 
+/**
+ * Rational Operator + Overload
+ * Adds two rational numbers.
+ * Finds common denominators when necessary.
+ * @param rhs
+ * @returns the sum between the two numbers.
+ */
 const Rational Rational::operator+(const Rational& rhs) {
     if (_denominator != rhs._denominator) {
         Rational result((_numerator * rhs._denominator) + (rhs._numerator * _denominator), _denominator * rhs._denominator);
@@ -98,28 +157,35 @@ const Rational Rational::operator+(const Rational& rhs) {
     }
 }
 
-//void Rational::commonDenom(Rational& rhs) {
-//    int denom1 = _denominator;
-//    int denom2 = rhs._denominator;
-//
-//    _numerator *= denom2;
-//    _denominator *= denom2;
-//
-//    rhs._numerator *= denom1;
-//    rhs._denominator *= denom1;
-//}
 
-
+/**
+ * Rational Operator * Overload
+ * Multiplies two rational numbers.
+ * @param rhs
+ * @returns the product between the two numbers.
+ */
 const Rational Rational::operator*(const Rational& rhs)const {
     Rational result(_numerator * rhs._numerator, _denominator * rhs._denominator);
     return result;
 }
 
+/**
+ * Rational Operator / Overload
+ * Divides two rational numbers.
+ * @param rhs
+ * @returns the quotient between the two numbers.
+ */
 const Rational Rational::operator/(const Rational& rhs)const {
     Rational result(_numerator * rhs._denominator, _denominator * rhs._numerator);
     return result;
 }
 
+/**
+ * Rational Operator += Overload
+ * Adds two numbers and reassigns it to this
+ * @param rhs
+ * @returns a reference to the updated this value
+ */
 const Rational &Rational::operator+=(const Rational &rhs) {
 
     if (_denominator != rhs._denominator) {
@@ -135,6 +201,12 @@ const Rational &Rational::operator+=(const Rational &rhs) {
     return *this;
 }
 
+/**
+ * Rational Operator -= Overload
+ * Subtracts two numbers and reassigns it to this
+ * @param rhs
+ * @returns a reference to the updated this value
+ */
 const Rational &Rational::operator-=(const Rational &rhs) {
     if (_denominator != rhs._denominator) {
         this->_numerator = (_numerator * rhs._denominator) - (rhs._numerator * _denominator);
@@ -149,6 +221,12 @@ const Rational &Rational::operator-=(const Rational &rhs) {
     return *this;
 }
 
+/**
+ * Rational Operator *= Overload
+ * Multiplies two numbers and reassigns it to this
+ * @param rhs
+ * @returns a reference to the updated this value
+ */
 const Rational &Rational::operator*=(const Rational &rhs) {
     this->_numerator = _numerator * rhs._numerator;
     this->_denominator = _denominator * rhs._denominator;
@@ -156,6 +234,12 @@ const Rational &Rational::operator*=(const Rational &rhs) {
     return *this;
 }
 
+/**
+ * Rational Operator /= Overload
+ * Divides two numbers and reassigns it to this
+ * @param rhs
+ * @returns a reference to the updated this value
+ */
 const Rational &Rational::operator/=(const Rational &rhs) {
     this->_numerator = _numerator * rhs._denominator;
     this->_denominator = _denominator * rhs._numerator;
@@ -163,31 +247,61 @@ const Rational &Rational::operator/=(const Rational &rhs) {
     return *this;
 }
 
+/**
+ * Rational Operator = Overload
+ * Assigns rhs numerator and denominator to this numerator and denominator
+ * * @param rhs
+ * @returns a reference to the updated this value
+ */
 const Rational Rational::operator=(const Rational &rhs) {
     _numerator = rhs._numerator;
     _denominator = rhs._denominator;
     return *this;
 }
 
+/**
+ * Rational Operator == Overload
+ * Checks to see if the numerator and denominators
+ * are equal to rhs numerator and denominator.
+ * @param rhs
+ * @returns true or false depending on the explanation above.
+ */
 bool Rational::operator==(const Rational &rhs)const {
     return ((_numerator == rhs._numerator) && (_denominator == rhs._denominator));
-
 }
 
+/**
+ * Rational Operator == Overload
+ * Checks to see if either the numerator and denominators
+ * are equal to either rhs numerator and denominator.
+ * @param rhs
+ * @returns true or false depending on the explanation above.
+ */
 bool Rational::operator!=(const Rational &rhs)const {
 
     return ((_numerator != rhs._numerator) || (_denominator != rhs._denominator));
 }
 
+/**
+ * Rational Operator > Overload
+ * Compares the values of both rationals.
+ * @param rhs
+ * @returns true if this is grater than rhs and false otherwise.
+ */
 bool Rational::operator>(const Rational &rhs)const {
 
     double num1 = ToDouble();
     double num2 = rhs.ToDouble();
 
     return (num1 > num2);
-
 }
 
+/**
+ * Rational Operator >= Overload
+ * Compares the values of both rationals.
+ * @param rhs
+ * @returns true if this is greater than or equal to rhs and false otherwise.
+ */
 bool Rational::operator>=(const Rational &rhs)const {
 
     double num1 = ToDouble();
@@ -196,6 +310,12 @@ bool Rational::operator>=(const Rational &rhs)const {
     return (num1 >= num2);
 }
 
+/**
+ * Rational Operator <= Overload
+ * Compares the values of both rationals.
+ * @param rhs
+ * @returns true if this is less than or equal to rhs and false otherwise.
+ */
 bool Rational::operator<=(const Rational &rhs)const {
     double num1 = ToDouble();
     double num2 = rhs.ToDouble();
@@ -203,6 +323,12 @@ bool Rational::operator<=(const Rational &rhs)const {
     return (num1 <= num2);
 }
 
+/**
+ * Rational Operator < Overload
+ * Compares the values of both rationals.
+ * @param rhs
+ * @returns true if this is less rhs and false otherwise.
+ */
 bool Rational::operator<(const Rational &rhs)const {
 
     double num1 = ToDouble();
@@ -211,15 +337,24 @@ bool Rational::operator<(const Rational &rhs)const {
     return (num1 < num2);
 }
 
-
+/**
+ * Rational Operator << Overload
+ * Outputs the numerator and denominator to the ostream.
+ * @param lhs
+ * @returns os
+ */
 ostream& operator<<(ostream& os, const Rational& lhs) {
     os << lhs._numerator << '/' << lhs._denominator;
     return os;
 }
 
-
+/**
+ * ToString
+ * Converts the rational number to a string
+ * @param none
+ * @return the string representation of the rational number
+ */
 string Rational::ToString()const {
-
 
     stringstream ss;
 
@@ -238,40 +373,17 @@ string Rational::ToString()const {
     }
 
     return ss.str();
-
 }
 
+/**
+ * To Double
+ * Makes the rational number into a double/decimal number
+ * @return the decimal number
+ */
 double Rational::ToDouble()const {
     double result;
     result = (_numerator * 1.0) / (_denominator * 1.0);
     return result;
-
-//    stringstream ss;
-//    ss << result;
-//
-//    string num = ss.str();
-//
-//   stringstream rounded;
-//
-//   bool decimalSeen = false;
-//
-//   int afterDec = 0;
-//
-//   for (int i = 0; i < num.length(); i++) {
-//       if (num[i] != '.') {
-//           rounded << num[i];
-//       } else {
-//           decimalSeen = true;
-//           continue;
-//       }
-//
-//       if (decimalSeen && afterDec < 2) {
-//           rounded << num[i];
-//           afterDec++;
-//       }
-//   }
-//     return stod(rounded.str());
-
 }
 
 

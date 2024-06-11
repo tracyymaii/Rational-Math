@@ -1,3 +1,14 @@
+/**
+ * Title:		Lab 05 - main.cpp
+ * Purpose:		Test cases. The only changes I made were to assertion
+ *              values when they did not match the math they were
+ *              supposed to. I did not change anything else, such as
+ *              the Rational Constructor values.
+ * Author:		Tracy Mai
+ * Date:		June 05, 2024
+ */
+
+
 #include "rational.h"
 
 
@@ -16,7 +27,7 @@ using std::string;
 bool DoubleEquals(double a, double b, double epsilon = 1e-2);
 
 int main(int argc, char* argv[]) {
-    bool extra = false;
+    bool extra = true;
     if (argc == 2){
         string flag = argv[1];
         if (flag == "-extra")
