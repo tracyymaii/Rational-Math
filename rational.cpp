@@ -1,5 +1,5 @@
 /**
- * Title:		Lab 05 - rational.cpp
+ * Title:		rational.cpp
  * Purpose:		Does math operations on rational numbers
  * Author:		Tracy Mai
  * Date:		June 05, 2024

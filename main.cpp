@@ -1,5 +1,5 @@
 /**
- * Title:		Lab 05 - main.cpp
+ * Title:		main.cpp
  * Purpose:		Test cases. The only changes I made were to assertion
  *              values when they did not match the math they were
  *              supposed to. I did not change anything else, such as
